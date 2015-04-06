@@ -14,8 +14,8 @@ with picamera.PiCamera() as camera:
             camera.capture(stream, 'bgr', use_video_port=True)
             # stream.array now contains the image data in BGR order
             cv2.imshow('frame', stream.array)
-	    cv2.imwrite('/home/pi/project/cam.jpg', stream.array)
-	    p=subprocess.Popen(["zbarimg cam.jpg"],stdout=subprocess.PIPE,shell=True)
+	    cv2.imwrite('/home/pi/Github/factory_control/cam.jpg', stream.array)
+	    p=subprocess.Popen(["zbarimg cam.jpg 2>/dev/null"],stdout=subprocess.PIPE,shell=True)
             qr_code = p.stdout.read()
 	    if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
