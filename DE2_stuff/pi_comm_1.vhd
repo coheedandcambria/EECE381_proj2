@@ -47,7 +47,7 @@ process(clock_50, reset)
 		--variable next_letter : std_logic_vector(7 downto 0);
 		
 		--variable letter_1, letter_2, letter_3, letter_4 : std_logic_vector(7 downto 0);
-		variable letter_total : std_logic_vector(31 downto 0);
+		variable letter_total : std_logic_vector(31 downto 0) := "00000000000000000000000000000000";
 		variable s_letter : std_logic_vector(6 downto 0);
 	
 		--variable id : std_logic_vector(1 downto 0);
@@ -149,8 +149,8 @@ begin
 							ack_out <= '0';
 							next_state := r_letter_4;
 						end if;
-					--else
-						--next_state := incorrect;
+					else
+						next_state := wait_state_4;
 					end if;
 					
 				when wait_state_4 =>
@@ -162,11 +162,15 @@ begin
 					
 				when check_name =>
 					--ledr <= letter_total(31 downto 14);
-					if(letter_total = "01010000011010000110100101101100") then
+					if((letter_total = "01010000011010000110100101101100") OR 
+						(letter_total = "01000001011011010111001001101111") OR
+						(letter_total = "01010011011101000110010101110000") OR 
+						(letter_total = "01001010011011110110100001101110") OR
+						(letter_total = "01001010011011110110010100000000"))then
 						ledr(17) <= '1';
-						s_letter := "1001001";
-					else
 						s_letter := "1011001";
+					else
+						s_letter := "1001110";
 					end if;
 					
 					if(send = '0') then
@@ -177,11 +181,10 @@ begin
 				when s_letter_1 =>
 					--sending over name
 					if(ack_in = '0') then
-						--ledr(16) <= '1';
 						done_out <= '0';
 						data_out <= s_letter;
 						valid_out <= '1';
-						ledr(6 downto 0) <= data_out;
+						--ledr(6 downto 0) <= data_out;
 						next_state := send_letter;
 					end if;
 					
