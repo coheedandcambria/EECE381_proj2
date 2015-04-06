@@ -21,7 +21,7 @@ architecture behavioural of pi_comm_1 is
 	signal data_in: std_logic_vector(7 downto 0);
 	signal data_out : std_logic_vector(6 downto 0);
 	signal done_in, done_out: std_logic;
-	signal send : std_logic;
+	signal send, user_add : std_logic;
 	
 begin
 	
@@ -62,8 +62,8 @@ begin
 			case next_state is
 				when idle =>
 					ledg <= "00000000";
-					ledr(7 downto 0) <= "00000000";
-					ledr(17 downto 15) <= "000";
+					ledr <= "000000000000000000";
+					--ledr(17 downto 15) <= "000";
 					ack_out <= '0';
 					next_state := r_letter_1;
 					
@@ -198,7 +198,7 @@ begin
 					
 				when others =>
 					done_out <= '1';
-					next_state := wait_state;
+					next_state := idle;
 					
 				end case;
 		end if;
