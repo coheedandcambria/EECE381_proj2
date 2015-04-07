@@ -19,7 +19,6 @@ ackOut = 24 				#CE0
 doneIn = 26 				#ce1
 
 readWrite =  7				#4 on the cobbler
-user = 1
 
 class GUI(Frame):
 	def __init__(self, parent):
@@ -33,26 +32,91 @@ class GUI(Frame):
 		self.style.theme_use("default")
 		self.pack(fill=BOTH, expand=1)
 		if (user == 1):
-			printButton = Button(self, text="Send Test", command=self.sendMessage)
-			printButton.place(x=50,y=100)
-			logoutButton = Button(self, text="Logout", command=self.parent.destroy)
-			logoutButton.place(x=50,y=50)
+			ledgOnButton = Button(self, text="Turn On Green LEDs", command=self.ToggleOnLEDg)
+			ledgOnButton.place(x=50,y=50)
+			ledgOffButton = Button(self, text="Turn Off Green LEDs", command=self.ToggleOffLEDg)
+			ledgOffButton.place(x=50,y=100)
+			ledgPlusButton = Button(self, text="Turn Up Green LEDs", command=self.LEDgPlus)
+			ledgPlusButton.place(x=50,y=150)
+			ledgMinButton = Button(self, text="Turn Down Green LEDs", command=self.LEDgMinus)
+			ledgMinButton.place(x=50,y=200)
+			logoutButton = Button(self, text="Logout", command=self.Logout)
+			logoutButton.place(x=200,y=50)
 			quitButton = Button(self, text="Quit", command=self.quitProgram)
-			quitButton.place(x=200,y=50)
+			quitButton.place(x=200,y=100)
 		elif(user == 2):
-			logoutButton = Button(self, text="Logout", command=self.parent.destroy)
-			logoutButton.place(x=50,y=50)
+			ledrOnButton = Button(self, text="Turn On Red LEDs", command=self.ToggleOnLEDr)
+			ledrOnButton.place(x=50,y=50)
+			ledrOffButton = Button(self, text="Turn Off Red LEDs", command=self.ToggleOffLEDr)
+			ledrOffButton.place(x=50,y=100)
+			logoutButton = Button(self, text="Logout", command=self.Logout)
+			logoutButton.place(x=200,y=50)
 			quitButton = Button(self, text="Quit", command=self.quitProgram)
-			quitButton.place(x=200,y=50)
-		
-	
-	def display(self):
-		print "button clicked"
+			quitButton.place(x=200,y=100)
+		elif(user == 3):
+			ledgOnButton = Button(self, text="Turn On Green LEDs", command=self.ToggleOnLEDg)
+			ledgOnButton.place(x=50,y=50)
+			ledgOffButton = Button(self, text="Turn Off Green LEDs", command=self.ToggleOffLEDg)
+			ledgOffButton.place(x=50,y=100)
+			ledrOnButton = Button(self, text="Turn On Red LEDs", command=self.ToggleOnLEDr)
+			ledrOnButton.place(x=50,y=150)
+			ledrOffButton = Button(self, text="Turn Off Red LEDs", command=self.ToggleOffLEDr)
+			ledrOffButton.place(x=50,y=200)
+			logoutButton = Button(self, text="Logout", command=self.Logout)
+			logoutButton.place(x=200,y=50)
+			quitButton = Button(self, text="Quit", command=self.quitProgram)
+			quitButton.place(x=200,y=100)
 
-	def sendMessage(self):
-		sendString("test")
+		elif(user == 4):
+			ledgOnButton = Button(self, text="Turn On Green LEDs", command=self.ToggleOnLEDg)
+			ledgOnButton.place(x=50,y=50)
+			ledgOffButton = Button(self, text="Turn Off Green LEDs", command=self.ToggleOffLEDg)
+			ledgOffButton.place(x=50,y=100)
+			ledrOnButton = Button(self, text="Turn On External LED", command=self.ToggleOnGPIO)
+			ledrOnButton.place(x=50,y=150)
+			ledrOffButton = Button(self, text="Turn Off External LED", command=self.ToggleOffGPIO)
+			ledrOffButton.place(x=50,y=200)
+			logoutButton = Button(self, text="Logout", command=self.Logout)
+			logoutButton.place(x=200,y=50)
+			quitButton = Button(self, text="Quit", command=self.quitProgram)
+			quitButton.place(x=200,y=100)
+
+	def ToggleOnLEDg(self):
+		sendString("glON")
 		string = receiveString()
-		print string
+
+	def ToggleOffLEDg(self):
+		sendString("gOFF")
+		string = receiveString()
+	
+	def LEDgPlus(self):
+		sendString("gPLS")
+		string = receiveString()
+
+	def LEDgMinus(self):
+		sendString("gMIN")
+		string = receiveString()
+
+	def ToggleOnLEDr(self):
+		sendString("rlON")
+		string = receiveString()
+
+	def ToggleOffLEDr(self):
+		sendString("rOFF")
+		string = receiveString()
+
+	def ToggleOnGPIO(self):
+		sendString("GPON")
+		string = receiveString()
+
+	def ToggleOffGPIO(self):
+		sendString("GOFF")
+		string = receiveString()
+
+	def Logout(self):
+		sendString("logO")
+		string = receiveString()
+		self.parent.destroy()
 
 	def quitProgram	(self):
 		exit(0)
@@ -245,21 +309,27 @@ def main():
 			result = scanQR()
 			sendString(result)
 			receivedString = receiveString()
-			
+			global user
+
 			if receivedString == "Y":
 				print "Login Accepted"
 				user_login = 1
+				
 				if (text == "Phil"):
-					global user
 					user = 1
 				elif(text == "Amro"):
-					global user 
 					user = 2
+				elif(text == "Steph"):
+					user = 3
+				elif(text == "John"):
+					user = 4
+
 			## START THE GUI INTERFACE ##
 				controller(text)
 			else:
 				print "Id does not match Username"
 				user_login = 0
+				user = 0
 	
 		
 	
